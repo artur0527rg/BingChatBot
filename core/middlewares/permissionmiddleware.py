@@ -17,4 +17,6 @@ class Permission(BaseMiddleware):
   ) -> Any:
     if event.from_user.id in self.allowed_users:
         return await handler(event, data)
-    return await data['bot'].send_message(event.from_user.id, "Permissions denied!")
+    return await data['bot'].send_message(
+       event.from_user.id, "⚠️You are not authorized to use this bot⚠️"
+      )

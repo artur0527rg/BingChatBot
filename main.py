@@ -6,7 +6,7 @@ from aiogram.filters import Command
 
 from core.settings import settings
 from core.utils.commands import set_commands
-from core.handlers import basic
+from core.handlers import basic, bing
 from core.middlewares.permissionmiddleware import Permission
 
 
@@ -30,7 +30,8 @@ async def start():
   # Middlewares
   dp.message.middleware.register(Permission(settings.bots.allowed_users))
   # Handlers
-  # dp.message.register(basic.foo)
+  dp.message.register(basic.send_welcome, Command(commands=['start', 'help']))
+  dp.message.register(bing.bing)
   # Sys
   dp.startup.register(start_bot)
   dp.shutdown.register(stop_bot)
