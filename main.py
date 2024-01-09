@@ -1,4 +1,5 @@
 import logging
+import json
 
 import asyncio
 from aiogram import Bot, Dispatcher, F
@@ -8,6 +9,7 @@ from core.settings import settings
 from core.utils.commands import set_commands
 from core.handlers import basic, bing
 from core.middlewares.permissionmiddleware import Permission
+from core.middlewares.chatmiddleware import Chat
 
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -25,13 +27,15 @@ async def start():
     format = '%(asctime)s - [%(levelname)s] - %(name)s'
              '(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s'  
   )
-  bot = Bot(settings.bots.bot_token, parse_mode='HTML')
+  bot = Bot(settings.bots.bot_token, parse_mode='Markdown')
   dp = Dispatcher()
   # Middlewares
   dp.message.middleware.register(Permission(settings.bots.allowed_users))
+  chat_middleware = Chat(json.loads(open('cookie.json').read()))
+  dp.message.middleware.register(chat_middleware)
   # Handlers
   dp.message.register(basic.send_welcome, Command(commands=['start', 'help']))
-  dp.message.register(bing.bing)
+  dp.message.register(bing.bing_message)
   # Sys
   dp.startup.register(start_bot)
   dp.shutdown.register(stop_bot)
@@ -40,6 +44,7 @@ async def start():
     await dp.start_polling(bot)
   finally:
     await bot.session.close()
+    await chat_middleware.close()
 
 if __name__ == "__main__":
   asyncio.run(start())
