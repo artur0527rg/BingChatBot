@@ -5,3 +5,4 @@ cookie.json
 cookie1.json
 cookie2.json
 test.py
+*.response

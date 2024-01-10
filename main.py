@@ -34,8 +34,9 @@ async def start():
   chat_middleware = Chat(json.loads(open('cookie.json').read()))
   dp.message.middleware.register(chat_middleware)
   # Handlers
-  dp.message.register(basic.send_welcome, Command(commands=['start', 'help']))
-  dp.message.register(bing.bing_message)
+  dp.message.register(basic.get_welcome, Command(commands=['start', 'help']))
+  dp.message.register(bing.get_reset, Command(commands=['reset']))
+  dp.message.register(bing.get_bing_message)
   # Sys
   dp.startup.register(start_bot)
   dp.shutdown.register(stop_bot)
