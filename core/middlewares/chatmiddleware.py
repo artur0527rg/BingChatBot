@@ -4,6 +4,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
 
 from core.utils.chatbot import Chatbot
+from core.utils.exeptions import ChatException
 
 
 class Chat(BaseMiddleware):
@@ -23,7 +24,10 @@ class Chat(BaseMiddleware):
         cookies=self.cookie,
       )
     data['chat'] = self.edges[event.from_user.id]
-    return await handler(event, data)
+    try:
+      return await handler(event, data)
+    except ChatException:
+      return await event.answer('Something went wrong, try again later.')
   
   async def close(self):
     for chat in self.edges.values():
