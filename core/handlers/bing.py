@@ -7,11 +7,8 @@ from core.utils.chatbot import Chatbot
 async def get_bing_message(message: Message, bot: Bot, chat: Chatbot):
   try:
     result = await chat.answer_tg(message, bot)
-  except Exception:
-    await message.answer(
-      'Too many messages, try again in a few seconds or 24 hours. '\
-      'If the error continues, change the cookies.'
-    )
+  except Exception as ex:
+    await message.answer(str(ex))
     return
   for msg in result['messages']:
     for i in range(0, len(msg), 4095):
