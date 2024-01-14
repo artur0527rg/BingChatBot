@@ -16,6 +16,10 @@ async def set_commands(bot: Bot):
       command='switch',
       description='Select conversation style',
     ),
+    BotCommand(
+      command='image',
+      description='Generate a picture',
+    ),
   ]
   
   await bot.set_my_commands(commands, BotCommandScopeDefault())

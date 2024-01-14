@@ -3,13 +3,13 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 links_markup = InlineKeyboardMarkup(inline_keyboard=[
   [
     InlineKeyboardButton(
-      text='Github',
+      text='Github(author)',
       url='https://github.com/artur0527rg/BingChatBot',
     )
   ],
   [
     InlineKeyboardButton(
-      text='Github(owner)',
+      text='Github(reference)',
       url='https://github.com/pininkara/BingChatBot',
     )
   ],
