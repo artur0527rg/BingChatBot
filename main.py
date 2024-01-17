@@ -1,3 +1,4 @@
+from contextlib import suppress
 import logging
 import json
 
@@ -33,20 +34,23 @@ async def start():
   dp.message.middleware.register(Permission(settings.bots.allowed_users))
   chat_middleware = Chat(json.loads(open('cookie.json').read()))
   dp.message.middleware.register(chat_middleware)
+  dp.callback_query.middleware.register(chat_middleware)
   # Handlers
   dp.message.register(basic.get_welcome, Command(commands=['start', 'help']))
   dp.message.register(bing.get_reset, Command(commands=['reset']))
   dp.message.register(bing.get_image, Command(commands=['image']))
   dp.message.register(bing.get_bing_message)
+  dp.callback_query.register(bing.select_suggestion)
   # Sys
   dp.startup.register(start_bot)
   dp.shutdown.register(stop_bot)
 
   try:
-    await dp.start_polling(bot)
+      await dp.start_polling(bot)
   finally:
     await bot.session.close()
     await chat_middleware.close()
 
 if __name__ == "__main__":
-  asyncio.run(start())
+  with suppress(KeyboardInterrupt, SystemExit):
+    asyncio.run(start())

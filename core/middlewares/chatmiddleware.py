@@ -1,3 +1,4 @@
+import asyncio
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
@@ -33,7 +34,7 @@ class Chat(BaseMiddleware):
     return await handler(event, data)
   
   async def close(self):
-    for chat in self.edges.values():
-      await chat.close()
-    for chat in self.img_edges.values():
-      await chat.session.aclose()
+    await asyncio.gather(
+    *[chat.close() for chat in self.edges.values()],
+    *[chat.session.aclose() for chat in self.img_edges.values()]
+    )

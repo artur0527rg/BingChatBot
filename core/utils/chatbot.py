@@ -23,7 +23,7 @@ class Chatbot(Chatbot):
     )
     return self
   
-  async def answer_tg(self, message:Message, bot:Bot):
+  async def answer_tg(self, promt:str, bot:Bot):
     is_disengaged = False
     result = {
       'messages':[],
@@ -31,7 +31,7 @@ class Chatbot(Chatbot):
     }
 
     response = await self.ask(
-      message.text, conversation_style=self.conversation_style
+      promt, conversation_style=self.conversation_style
     )
     for message in response['item']['messages'][1:]:
       if message.get('messageType') == 'Disengaged':
