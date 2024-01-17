@@ -38,6 +38,7 @@ async def start():
   # Handlers
   dp.message.register(basic.get_welcome, Command(commands=['start', 'help']))
   dp.message.register(bing.get_reset, Command(commands=['reset']))
+  dp.message.register(bing.get_switch, Command(commands=['switch']))
   dp.message.register(bing.get_image, Command(commands=['image']))
   dp.message.register(bing.get_bing_message)
   dp.callback_query.register(bing.select_suggestion)

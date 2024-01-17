@@ -1,7 +1,7 @@
 from aiogram import Bot
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandObject
-from re_edge_gpt import ImageGenAsync
+from re_edge_gpt import ImageGenAsync, ConversationStyle
 
 from core.utils.chatbot import Chatbot
 from core.keyboards.inline import suggestions_builder
@@ -90,3 +90,29 @@ async def select_suggestion(call: CallbackQuery, bot:Bot, chat:Chatbot):
         result['message'][i:i+4095],
         reply_markup=suggestions_builder(result['suggestions']).as_markup()
       )
+
+async def get_switch(
+    message: Message,
+    chat: Chatbot,
+    command: CommandObject,
+  ):
+  style = ''
+  if command.args:
+    style = command.args.lower().strip()
+    
+  if style == 'creative':
+    chat.conversation_style = ConversationStyle.creative
+    await message.answer('🎨Changed to Creative')
+  elif style == 'balanced':
+    chat.conversation_style = ConversationStyle.balanced
+    await message.answer('⚖️Changed to Balanced')
+  elif style == 'precise':
+    chat.conversation_style = ConversationStyle.precise
+    await message.answer('🎯Changed to Precise')
+  else: 
+    await message.answer(
+      'Сhoose one communication option:\n'\
+      'creative|balanced|precise\n'
+      '\nExample:\n'\
+      '`/switch balanced`'
+    )
