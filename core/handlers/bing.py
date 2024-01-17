@@ -13,14 +13,21 @@ async def get_bing_message(message: Message, bot: Bot, chat: Chatbot):
   except Exception as ex:
     await message.answer('😢Looks like something went wrong. Try again after a few seconds.')
     return
-  for msg in result['messages']:
-    for i in range(0, len(msg), 4095):
-      await message.answer(msg[i:i+4095])
-  if result['suggestions']:
+  # Empty answer
+  if not result['message']:
     await message.answer(
-      '📃Suggestions:',
-      reply_markup=suggestions_builder(result['suggestions']).as_markup()
+      'Looks like Bing ended the chat😢.\n'\
+      'To start new conversation use - /reset',
     )
+  # Answer
+  for i in range(0, len(result['message']), 4095):
+    if i+4095<len(result['message']):
+      await message.answer(result['message'][i:i+4095])
+    else:
+      await message.answer(
+        result['message'][i:i+4095],
+        reply_markup=suggestions_builder(result['suggestions']).as_markup()
+      )
 
 async def get_reset(message: Message, bot: Bot, chat: Chatbot):
   await chat.reset()
@@ -63,12 +70,23 @@ async def select_suggestion(call: CallbackQuery, bot:Bot, chat:Chatbot):
       '😢Looks like something went wrong. Try again after a few seconds.'
     )
     return
-  for msg in result['messages']:
-    for i in range(0, len(msg), 4095):
-      await bot.send_message(call.from_user.id, msg[i:i+4095])
-  if result['suggestions']:
+  # Empty answer
+  if not result['message']:
     await bot.send_message(
       call.from_user.id,
-      '📃Suggestions:',
-      reply_markup=suggestions_builder(result['suggestions']).as_markup()
+      'Looks like Bing ended the chat😢.\n'\
+      'To start new conversation use - /reset',
     )
+  # Answer
+  for i in range(0, len(result['message']), 4095):
+    if i+4095<len(result['message']):
+      await bot.send_message(
+        call.from_user.id,
+        result['message'][i:i+4095]
+      )
+    else:
+      await bot.send_message(
+        call.from_user.id,
+        result['message'][i:i+4095],
+        reply_markup=suggestions_builder(result['suggestions']).as_markup()
+      )

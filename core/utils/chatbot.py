@@ -26,38 +26,39 @@ class Chatbot(Chatbot):
   async def answer_tg(self, promt:str, bot:Bot):
     is_disengaged = False
     result = {
-      'messages':[],
+      'message':'',
       'suggestions':[],
     }
+    links = []
 
     response = await self.ask(
       promt, conversation_style=self.conversation_style
     )
     for message in response['item']['messages'][1:]:
-      if message.get('messageType') == 'Disengaged':
-        is_disengaged = True
       if not message.get('text'):
         continue
       message_text = re.sub(r'\[\^\d\^]',  '', message['text'])
+      # Links
       if message.get('sourceAttributions'):
-        message_text += "\n\nLinks:\n"
         for source in message['sourceAttributions']:
-          message_text += f"[{source['providerDisplayName']}]({source['seeMoreUrl']})\n"
-      result['messages'].append(message_text)
+          links.append(f"[{source['providerDisplayName']}]({source['seeMoreUrl']})")
+      # Suggestions
       if message.get('suggestedResponses'):
         for suggestion in message['suggestedResponses']:
           result['suggestions'].append(suggestion['text'])
+      # Text
+      result['message']+=message_text
+      result['message']+='\n----------\n'
 
-    max_messages = response['item']['throttling']['maxNumUserMessagesInConversation']
-    num_messages = response['item']['throttling']['numUserMessagesInConversation']
-    result['messages'].append(
-      f"🟢Messages In Conversation : {num_messages} / {max_messages}",
-    )
-
-    if is_disengaged:
-      result['messages'].append(
-        'Bing ended the chat😢.\n'\
-        'To start new conversation use - /reset',
+    if links:
+      result['message']+='\nLinks:\n'
+    for index in range(len(links)):
+      result['message']+=f"{index+1}. {links[index]}\n"
+    if result['message']:
+      max_messages = response['item']['throttling']['maxNumUserMessagesInConversation']
+      num_messages = response['item']['throttling']['numUserMessagesInConversation']
+      result['message']+= (
+        f"\n\n🟢Messages In Conversation : {num_messages} / {max_messages}"
       )
     return result
 
