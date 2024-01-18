@@ -17,10 +17,10 @@ asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 async def start_bot(bot:Bot):
   await set_commands(bot)
-  await bot.send_message(settings.bots.admin_id, 'Бот запущен!')
+  await bot.send_message(settings.bots.admin_id, 'The bot is running!')
 
 async def stop_bot(bot:Bot):
-  await bot.send_message(settings.bots.admin_id, 'Бот остановлен!')
+  await bot.send_message(settings.bots.admin_id, 'The bot has stopped!')
 
 async def start():
   logging.basicConfig(
