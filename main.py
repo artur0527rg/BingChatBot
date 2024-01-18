@@ -1,4 +1,5 @@
 from contextlib import suppress
+import platform
 import logging
 import json
 
@@ -13,7 +14,8 @@ from core.middlewares.permissionmiddleware import Permission
 from core.middlewares.chatmiddleware import Chat
 
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+if platform.system() == 'Windows':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 async def start_bot(bot:Bot):
   await set_commands(bot)
